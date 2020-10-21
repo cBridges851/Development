@@ -1,8 +1,12 @@
 from flask import Flask, render_template, request
 import requests
 from bs4 import BeautifulSoup
-import json
-from datetime import date
+from TitleFinder import TitleFinder
+from AuthorFinder import AuthorFinder
+from WebsiteObjectRetriever import WebsiteObjectRetriever
+from WebsiteNameFinder import WebsiteNameFinder
+from PublicationYearFinder import PublicationYearFinder
+from CurrentDateFinder import CurrentDateFinder
 
 app = Flask(__name__)
 
@@ -19,23 +23,27 @@ def submit():
     response = requests.get(url)
     soup = BeautifulSoup(response.text, "html.parser")    
 
+    websiteObjectRetriever = WebsiteObjectRetriever(soup)
+    deserializedJson = websiteObjectRetriever.retrieve()
+
     # Find Author
-    scriptTag = soup.find("script")
-    scriptTagContents = scriptTag.contents
-    deserializedJson = json.loads(scriptTagContents[0])
-    author = deserializedJson["author"]["name"]
-    author = author.split(" ")
-    author = author[2] + ", " + author[1][0] + "."
+    authorFinder = AuthorFinder(soup, deserializedJson)
+    author = authorFinder.find()
 
     # Find Title
-    title = soup.find("h1").get_text()
+    titleFinder = TitleFinder(soup)
+    title = titleFinder.find()
 
     # Find Name of Website
-    websiteName = deserializedJson["publisher"]["name"]
+    websiteNameFinder = WebsiteNameFinder(soup, deserializedJson)
+    websiteName = websiteNameFinder.find()
 
     # Find Year Of Publication
-    publicationYear = soup.find("time").attrs["datetime"][0:4]
-
-    currentDate = date.today()
+    publicationYearFinder = PublicationYearFinder(soup)
+    publicationYear = publicationYearFinder.find()
+    
+    # Get Current Date
+    currentDateFinder = CurrentDateFinder()
+    currentDate = currentDateFinder.find()
     
     return render_template("output.html", url=url, author=author, title=title, websiteName=websiteName, publicationYear=publicationYear, currentDate=currentDate)

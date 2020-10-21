@@ -4,6 +4,7 @@ import requests
 from bs4 import BeautifulSoup
 import json
 from flask import Flask, render_template
+from TitleFinder import TitleFinder
 
 app = Flask(__name__)
 
