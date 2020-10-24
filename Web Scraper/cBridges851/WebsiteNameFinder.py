@@ -4,4 +4,8 @@ class WebsiteNameFinder():
         self.deserializedJson = deserializedJson
 
     def find(self):
-        return self.deserializedJson["publisher"]["name"]
+        if self.deserializedJson != None:
+            return self.deserializedJson["publisher"]["name"]
+        
+        websiteNameMeta = self.soup.find(attrs={"property" : "og:site_name"})
+        return websiteNameMeta.attrs["content"]

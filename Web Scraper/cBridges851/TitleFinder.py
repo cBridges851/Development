@@ -3,4 +3,8 @@ class TitleFinder():
         self.soup = soup
 
     def find(self):
-        return self.soup.find("h1").get_text()
+        if self.soup.find("h1") != None:
+            return self.soup.find("h1").get_text()
+
+        if self.soup.find("title") != None:
+            return self.soup.find("title").get_text()

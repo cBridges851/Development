@@ -1,4 +1,5 @@
 from datetime import date
+from OrdinalRetriever import OrdinalRetriever
 
 class CurrentDateFinder():
     def __init__(self):
@@ -7,5 +8,7 @@ class CurrentDateFinder():
     def find(self):
         currentDate = date.today()
         day = currentDate.day
+        ordinal = OrdinalRetriever(day).retrieveOrdinal()
 
-        return day
+        returnString = f"{day}{ordinal} {currentDate.strftime('%b')} {currentDate.year}"
+        return returnString

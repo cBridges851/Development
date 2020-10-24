@@ -6,6 +6,9 @@ class WebsiteObjectRetriever():
         self.soup = soup
 
     def retrieve(self):
-        scriptTag = self.soup.find("script")
-        scriptTagContents = scriptTag.contents
-        return json.loads(scriptTagContents[0])
+        try:
+            scriptTag = self.soup.find("script")
+            scriptTagContents = scriptTag.contents
+            return json.loads(scriptTagContents[0])
+        except:
+            return None
